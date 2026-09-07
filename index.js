@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import * as p from '@clack/prompts'
 import color from 'picocolors'
 import fs from 'fs'
