@@ -43,6 +43,15 @@ export async function createElectronVite(projectName, targetDir) {
             { value: 'shadcn', label: 'shadcn/ui' },
             { value: 'none', label: '无 (不添加 UI 库)' }
           ]
+        }),
+
+      stateManagement: () =>
+        p.select({
+          message: '请选择状态管理方案:',
+          options: [
+            { value: 'zustand', label: 'Zustand (轻量响应式状态管理)' },
+            { value: 'none', label: '无 (不添加状态管理库)' }
+          ]
         })
     },
     {
@@ -82,7 +91,14 @@ export async function createElectronVite(projectName, targetDir) {
     s.stop('shadcn/ui 配置完成')
   }
 
-  // 4. 交付提示（秒级完成，由用户自行按需安装依赖）
+  // 4. 叠加 Zustand 状态管理
+  if (options.stateManagement === 'zustand') {
+    s.start('正在配置 Zustand 状态管理...')
+    renderTemplate(path.join(PLUGINS_DIR, 'zustand'), targetDir)
+    s.stop('Zustand 配置完成')
+  }
+
+  // 5. 交付提示（秒级完成，由用户自行按需安装依赖）
   p.outro(color.green('项目创建成功！'))
   console.log('\n接下来请运行以下命令启动项目：')
   console.log(color.cyan(`  cd ${projectName}`))
