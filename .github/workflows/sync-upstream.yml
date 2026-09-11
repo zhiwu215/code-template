@@ -1,0 +1,56 @@
+name: 自动同步官方底座与插件依赖版本
+
+on:
+  schedule:
+    # 每周一 UTC 00:00 (北京时间上午 8:00) 自动执行
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+    # 支持在 GitHub Actions 界面手动一键触发
+
+jobs:
+  sync-and-test:
+    name: 同步最新依赖并运行构建测试
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: 检出当前仓库代码
+        uses: actions/checkout@v4
+
+      - name: 安装 pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: 设置 Node.js 环境 (v20)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: 安装脚手架自身依赖
+        run: pnpm install --frozen-lockfile || pnpm install
+
+      - name: 执行官方底座与插件依赖版本同步
+        id: sync
+        run: node scripts/sync-upstream.mjs
+
+      - name: 运行模板全链路生成测试
+        run: node scripts/ci-test.mjs
+
+      - name: 自动创建版本更新 Pull Request
+        if: steps.sync.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(deps): 自动同步官方底座与插件依赖版本"
+          title: "chore(deps): 自动同步官方底座与插件依赖版本"
+          body: ${{ steps.sync.outputs.pr_body }}
+          branch: "chore/sync-upstream-deps"
+          delete-branch: true
+          labels: |
+            dependencies
+            automated-pr
