@@ -1,13 +1,38 @@
 {
-  "name": "code-template",
+  "name": "@zhiwu215/code-template",
   "version": "1.0.0",
+  "description": "专属脚手架与项目模板开发工具",
   "type": "module",
-  "dependencies": {
-    "@clack/prompts": "^0.9.0",
-    "picocolors": "^1.1.1"
-  },
   "main": "index.js",
   "bin": {
     "code-template": "./index.js"
+  },
+  "files": [
+    "index.js",
+    "src",
+    "templates"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhiwu215/code-template.git"
+  },
+  "keywords": [
+    "scaffold",
+    "template",
+    "electron-vite",
+    "react",
+    "tailwind",
+    "shadcn",
+    "zustand"
+  ],
+  "author": "zhiwu215",
+  "license": "MIT",
+  "dependencies": {
+    "@clack/prompts": "^0.9.0",
+    "picocolors": "^1.1.1"
   }
 }
+
