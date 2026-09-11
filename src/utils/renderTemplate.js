@@ -1,5 +1,9 @@
-﻿import fs from 'fs'
+import fs from 'fs'
 import path from 'path'
+
+const FILE_MAPPING = {
+  _gitignore: '.gitignore'
+}
 
 /**
  * 递归模板渲染与覆盖引擎
@@ -13,12 +17,13 @@ export function renderTemplate(src, dest) {
     if (['node_modules', 'pnpm-lock.yaml', 'package-lock.json', 'yarn.lock'].includes(path.basename(src))) return
     fs.mkdirSync(dest, { recursive: true })
     for (const file of fs.readdirSync(src)) {
-      renderTemplate(path.resolve(src, file), path.resolve(dest, file))
+      const targetFileName = FILE_MAPPING[file] || file
+      renderTemplate(path.resolve(src, file), path.resolve(dest, targetFileName))
     }
     return
   }
 
-  const filename = path.basename(src)
+  const filename = path.basename(dest)
 
   // 遇到 package.json 执行智能深度合并
   if (filename === 'package.json' && fs.existsSync(dest)) {

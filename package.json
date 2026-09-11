@@ -1,6 +1,6 @@
 {
   "name": "@zhiwu215/code-template",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "专属脚手架与项目模板开发工具",
   "type": "module",
   "main": "index.js",
